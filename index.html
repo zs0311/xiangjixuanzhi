@@ -1,0 +1,3078 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项脊轩志 - 归有光</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'STKaiti', 'KaiTi', '楷体', 'Noto Serif SC', serif;
+            background: radial-gradient(ellipse at top, #e8dcc8 0%, transparent 50%), linear-gradient(to bottom, #f5f0e6, #e8dcc8);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 25px 20px 15px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #8b7355, transparent);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #3a2a1a;
+            text-shadow: 2px 2px 0 rgba(201,184,150,0.5);
+            letter-spacing: 0.5em;
+            margin-left: 0.5em;
+            position: relative;
+        }
+
+        .header h1::before, .header h1::after {
+            content: '❀';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #c9a227;
+            font-size: 0.4em;
+        }
+
+        .header h1::before { left: -0.5em; }
+        .header h1::after { right: -0.3em; }
+
+        .title-link {
+            color: #3a2a1a;
+            text-decoration: none;
+            border-bottom: 2px dashed #c9a227;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .title-main {
+            color: #3a2a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .title-main:hover {
+            color: #8b6914;
+        }
+
+        .title-link:hover {
+            color: #c9a227;
+            border-bottom-style: solid;
+        }
+
+        .info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(74,55,40,0.3), 0 0 0 2px #c9b896;
+            padding: 30px 35px;
+            max-width: 500px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 2000;
+        }
+
+        .info-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .info-popup h3 {
+            font-size: 1.5em;
+            color: #3a2a1a;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c9b896;
+            text-align: center;
+        }
+
+        .info-popup p {
+            font-size: 1.1em;
+            line-height: 1.9;
+            color: #4a3a2a;
+            text-indent: 2em;
+        }
+
+        .info-popup .close-info {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .info-popup .close-info:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* 评价页面样式 */
+        .review-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s;
+            z-index: 1999;
+        }
+
+        .review-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .review-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            padding: 40px 60px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .review-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .review-title {
+            font-size: 2em;
+            color: #3a2a1a;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #c9b896;
+        }
+
+        .review-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .review-item {
+            background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            border-left: 5px solid #d4a030;
+            position: relative;
+        }
+
+        .review-item h3 {
+            color: #8b6914;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .review-item p {
+            font-size: 1.15em;
+            line-height: 2;
+            color: #4a3a2a;
+            text-indent: 2em;
+        }
+
+        .close-review {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.6em;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .close-review:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .evaluate-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1999;
+        }
+
+        .evaluate-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .evaluate-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(74,55,40,0.3), 0 0 0 2px #c9b896;
+            padding: 30px 35px;
+            width: 90%;
+            max-width: 1100px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 2000;
+        }
+
+        .evaluate-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .close-evaluate {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-evaluate:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .evaluate-title {
+            font-size: 1.6em;
+            color: #3a2a1a;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #c9b896;
+        }
+
+        .evaluate-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .evaluate-left, .evaluate-right {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255,254,245,0.8) 0%, rgba(255,249,230,0.8) 100%);
+            border-radius: 15px;
+            border-left: 4px solid #c9a227;
+        }
+
+        .evaluate-subtitle {
+            font-size: 1.2em;
+            color: #8b6914;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #c9b896;
+        }
+
+        .evaluate-section {
+            margin-bottom: 18px;
+        }
+
+        .evaluate-section h4 {
+            color: #6b5344;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+        }
+
+        .evaluate-section p {
+            font-size: 0.95em;
+            line-height: 1.7;
+            color: #4a3a2a;
+            text-indent: 1.5em;
+        }
+
+        .guestbook-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1999;
+        }
+
+        .guestbook-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .guestbook-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(74,55,40,0.3), 0 0 0 2px #c9b896;
+            padding: 30px 35px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 2000;
+        }
+
+        .guestbook-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .close-guestbook {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-guestbook:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .guestbook-title {
+            font-size: 1.6em;
+            color: #3a2a1a;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #c9b896;
+        }
+
+        .guestbook-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .guestbook-section h3 {
+            font-size: 1.1em;
+        }
+
+        .quote-list p {
+            font-style: italic;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1999;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .header .author {
+            font-size: 1.2em;
+            color: #6b5344;
+            margin-top: 10px;
+            letter-spacing: 0.2em;
+        }
+
+        .scene-container {
+            position: relative;
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px auto;
+            aspect-ratio: 16/9;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(74,55,40,0.2), inset 0 0 100px rgba(255,255,255,0.3);
+        }
+
+        .courtyard {
+            position: absolute;
+            inset: 0;
+            background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+            transition: transform 1.2s ease, opacity 0.8s ease;
+            transform-origin: center center;
+        }
+
+        /* 切换到归家祖宅动画 - 放大渐变 */
+        .courtyard.zoom-to-ancestral {
+            animation: zoomInAncestral 1.2s ease forwards;
+        }
+
+        /* 切换回项脊轩动画 - 缩小渐变 */
+        .courtyard.zoom-from-ancestral {
+            animation: zoomOutAncestral 1.2s ease forwards;
+        }
+
+        @keyframes zoomInAncestral {
+            0% {
+                background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+                transform: scale(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            35% {
+                background: url('正规宅院图.png') center/cover no-repeat;
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes zoomOutAncestral {
+            0% {
+                background: url('正规宅院图.png') center/cover no-repeat;
+                transform: scale(1);
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+            }
+            35% {
+                background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .scene-container.before-repair .courtyard {
+            background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+        }
+
+        /* 吾妻死时的样子 */
+        .scene-container.wife-dead .courtyard {
+            background: url('修缮后吾妻死的样子.png') center/cover no-repeat;
+        }
+
+        /* 吾妻手植树苗 */
+        .scene-container.wife-planted .courtyard {
+            background: url('吾妻死之年手植.png') center/cover no-repeat;
+        }
+
+        /* 留言分享界面 */
+        .scene-container.big-tree .courtyard {
+            background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+        }
+
+        /* 归家祖宅 */
+        .scene-container.ancestral-home .courtyard {
+            background: url('正规宅院图.png') center/cover no-repeat;
+        }
+
+        /* 修缮后的样子（没有before-repair class时） */
+        .scene-container:not(.before-repair):not(.ancestral-home):not(.wife-dead):not(.wife-planted):not(.big-tree) .courtyard {
+            background: url('项脊轩旧南阁子.png') center/cover no-repeat;
+        }
+
+        .scene-container.ancestral-home .compare-btn,
+        .scene-container.ancestral-home .new-page-btn,
+        .scene-container.ancestral-home .bottom-icons {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .scene-container.ancestral-home .status-badge,
+        .scene-container.ancestral-home .repair-hint {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
+        /* 归家祖宅页面的按钮 */
+        .ancestral-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .scene-container.ancestral-home .ancestral-buttons {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .ancestral-text-btn,
+        .ancestral-video-btn,
+        .ancestral-comment-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .ancestral-text-btn {
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+        }
+
+        .ancestral-video-btn {
+            background: linear-gradient(135deg, #c9a227, #8b6914);
+            color: #fff;
+        }
+
+        .ancestral-comment-btn {
+            background: linear-gradient(135deg, #6b8e6b, #4a6b4a);
+            color: #fff;
+        }
+
+        /* 留言分享页面的按钮 */
+        .guestbook-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .scene-container.big-tree .guestbook-buttons {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .guestbook-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: inherit;
+            background: linear-gradient(135deg, #8b6914, #6b5344);
+            color: #fff;
+        }
+
+        .ancestral-text-btn:hover,
+        .ancestral-video-btn:hover,
+        .ancestral-comment-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .mountains {
+            display: none;
+        }
+
+        .scene-container.before-repair .mountains { opacity: 0; }
+        .scene-container.before-repair .sun { opacity: 0; }
+        .scene-container.before-repair .cloud { opacity: 0; }
+        .scene-container.before-repair .wall { opacity: 0; }
+        .scene-container.before-repair .ground { opacity: 0; }
+        .scene-container.before-repair .path { opacity: 0; }
+        .scene-container.before-repair .repair-overlay { opacity: 0; }
+        .scene-container.before-repair .hotspot { opacity: 0; pointer-events: none; }
+        .scene-container.before-repair .location-label { opacity: 0 !important; }
+        .scene-container.before-repair .character { opacity: 0; }
+
+        .sun {
+            display: none;
+        }
+
+        .scene-container.before-repair .sun {
+            opacity: 0.4;
+            background: radial-gradient(circle, #aaa 0%, #888 60%, transparent 70%);
+            box-shadow: none;
+        }
+
+        @keyframes sunGlow {
+            0%, 100% { box-shadow: 0 0 60px 20px rgba(255,200,100,0.4); }
+            50% { box-shadow: 0 0 80px 30px rgba(255,200,100,0.5); }
+        }
+
+        .wall, .ground, .path, .repair-overlay {
+            display: none;
+        }
+
+        /* 对比切换按钮 */
+        .compare-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            cursor: pointer;
+            z-index: 200;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 左侧新页面按钮 */
+        .new-page-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            cursor: pointer;
+            z-index: 200;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .new-page-btn:hover {
+            background: linear-gradient(135deg, #6b5344, #4a3728);
+            transform: scale(1.05);
+        }
+
+        /* 按钮激活状态 */
+        .compare-btn.active {
+            background: linear-gradient(135deg, #5a8c69, #4a7c59);
+        }
+
+        .new-page-btn.active {
+            background: linear-gradient(135deg, #5a8c69, #4a7c59);
+        }
+
+        /* 主页按钮位置：归家祖宅 | 项脊轩 | 修缮后项脊轩 */
+        #newPageBtn {
+            left: 15px;
+            right: auto;
+        }
+
+        #compareBtn {
+            left: 170px;
+            right: auto;
+        }
+
+        #homeBtn {
+            left: auto;
+            right: 15px;
+        }
+
+        /* 左下角小图标 - 只在"人事之变"界面显示 */
+        .bottom-icons {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-end;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            z-index: 100;
+        }
+        
+        /* 只在人事之变界面显示 */
+        .scene-container.before-repair .bottom-icons {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 所有图标始终显示 */
+        .bottom-icons .small-icon {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* 只在修缮前显示的图标 */
+        .bottom-icons .before-repair-only {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scene-container.before-repair .bottom-icons .before-repair-only {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 毛笔图标 */
+        .brush-icon {
+            animation: brushGlow 2s ease-in-out infinite;
+        }
+
+        .small-icon {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: transform 0.3s;
+        }
+
+        .small-icon:hover {
+            transform: scale(1.1);
+        }
+
+
+        /* 图标组基础样式 - 火把图标组使用flex column布局 */
+        .torch-icon-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* 手帕图标组 - 评、妻子按钮垂直排列在图标上方 */
+        .handkerchief-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .handkerchief-icon-group .qi-comment-btn,
+        .handkerchief-icon-group .qi-text-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .handkerchief-icon-group .qi-comment-btn {
+            top: -56px;
+        }
+
+        .handkerchief-icon-group .qi-text-btn {
+            top: -28px;
+        }
+
+        .handkerchief-icon-group .qi-comment-btn:hover,
+        .handkerchief-icon-group .qi-text-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 母亲图标组 - 两个文字按钮在图形图标上方垂直排列 */
+        .mother-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .mother-icon-group .mother-text-btn,
+        .mother-icon-group .mu-text-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .mother-icon-group .mother-text-btn {
+            top: -56px;
+        }
+
+        .mother-icon-group .mu-text-btn {
+            top: -28px;
+        }
+
+        .mother-icon-group .mother-text-btn:hover,
+        .mother-icon-group .mu-text-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 奶奶图标组 - 文字按钮在图形图标上方垂直排列 */
+        .grandma-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .grandma-icon-group .grandma-text-btn,
+        .grandma-icon-group .zu-text-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .grandma-icon-group .grandma-text-btn {
+            top: -56px;
+        }
+
+        .grandma-icon-group .zu-text-btn {
+            top: -28px;
+        }
+
+        .grandma-icon-group .grandma-text-btn:hover,
+        .grandma-icon-group .zu-text-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 大树图标组 - 树字位置下移与母祖妻对齐，评字在最上方 */
+        .tree-icon-group .grandma-text-btn {
+            top: -28px !important;
+        }
+
+        .tree-icon-group .ping-btn {
+            top: -56px !important;
+        }
+
+        /* 房子图标组 - 轩字位置下移与妻祖对齐 */
+        .house-icon-group .grandma-text-btn {
+            top: -28px !important;
+        }
+
+        /* 凳子手帕图标组 - 评字在妻字上方 */
+        .handkerchief-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .handkerchief-icon-group .qi-text-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .handkerchief-icon-group .qi-text-btn {
+            top: -28px;
+        }
+
+        .handkerchief-icon-group .ping-btn {
+            top: -56px !important;
+        }
+
+        .handkerchief-icon-group .qi-text-btn:hover,
+        .handkerchief-icon-group .ping-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 所有文字按钮统一样式 */
+        .mother-text-btn,
+        .mu-text-btn,
+        .grandma-text-btn,
+        .zu-text-btn,
+        .huo-text-btn,
+        .qi-text-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .mother-text-btn:hover,
+        .mu-text-btn:hover,
+        .grandma-text-btn:hover,
+        .zu-text-btn:hover,
+        .huo-text-btn:hover,
+        .qi-text-btn:hover {
+            transform: scale(1.15);
+        }
+
+        /* 火把图标组 - 火字按钮在图标左侧上方 */
+        .torch-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .huo-text-btn {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .huo-text-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 手帕图标组 - 妻字按钮在上方，手帕图标在下方，绝对定位对齐 */
+        .handkerchief-icon-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .qi-text-btn {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+        }
+
+        .qi-text-btn:hover {
+            transform: translateX(-50%) scale(1.15);
+        }
+
+        /* 奶奶象笏图片弹窗 */
+        .image-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1500;
+        }
+
+        /* 母亲文字弹窗 */
+        .mother-text-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1500;
+        }
+
+        .mother-text-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mother-text-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(74,55,40,0.3), 0 0 0 2px #c9b896;
+            padding: 30px 35px;
+            max-width: 500px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 1501;
+        }
+
+        .mother-text-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .mother-text-content {
+            font-size: 1.15em;
+            line-height: 2;
+            color: #4a3a2a;
+            text-align: center;
+        }
+
+        .mother-text-content .source {
+            display: block;
+            margin-top: 15px;
+            color: #8b6914;
+            font-size: 0.9em;
+        }
+
+        .close-mother-text {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-mother-text:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* 毛笔图标动画 */
+        .brush-icon {
+            animation: brushGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes brushGlow {
+            0%, 100% { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+            50% { filter: drop-shadow(0 2px 8px rgba(201,162,39,0.6)); }
+        }
+
+        .brush-icon:hover {
+            transform: scale(1.1);
+            animation: none;
+            filter: drop-shadow(0 3px 10px rgba(201,162,39,0.8));
+        }
+
+        /* 图片弹窗 */
+        .image-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1500;
+        }
+
+        .image-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            padding: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            z-index: 1501;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-popup img {
+            max-width: 0;
+            max-height: 0;
+            opacity: 0;
+            display: block;
+            border-radius: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .image-popup.show img {
+            max-width: 95%;
+            max-height: 95%;
+            opacity: 1;
+        }
+
+        .close-image {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-image:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* 母亲图片弹窗 */
+        .mother-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1500;
+        }
+
+        .mother-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mother-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            padding: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            z-index: 1501;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mother-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mother-popup img {
+            max-width: 0;
+            max-height: 0;
+            opacity: 0;
+            display: block;
+            border-radius: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mother-popup.show img {
+            max-width: 95%;
+            max-height: 95%;
+            opacity: 1;
+        }
+
+        .mother-popup video {
+            max-width: 85vw;
+            max-height: 75vh;
+            width: auto;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .close-mother {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-mother:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* 凳子手帕图片弹窗 */
+        .stool-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            z-index: 2000;
+        }
+
+        .stool-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .stool-popup {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            z-index: 2001;
+        }
+
+        .stool-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .stool-popup img,
+        .stool-popup video {
+            max-width: 0;
+            max-height: 0;
+            display: block;
+            border-radius: 0;
+            transition: all 0.5s ease;
+        }
+
+        .stool-popup.show img,
+        .stool-popup.show video {
+            max-width: 85vw;
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+
+        .close-stool {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: rgba(74,55,40,0.9);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .close-stool:hover {
+            background: rgba(74,55,40,1);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .compare-btn:hover {
+            background: linear-gradient(135deg, #6b5344, #4a3728);
+            transform: scale(1.05);
+        }
+
+        .compare-btn.active {
+            background: linear-gradient(135deg, #5a8c69, #4a7c59);
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(74,55,40,0.95);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            z-index: 200;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.5s ease;
+        }
+
+        .status-badge.show { opacity: 1; transform: translateY(0); }
+        .status-badge::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .status-badge.repaired::before { background: #90c978; }
+        .status-badge.damaged::before { background: #e57373; animation: blink 1s infinite; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* 修缮前提示文字 */
+        .repair-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(139, 90, 43, 0.95);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1em;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.8;
+        }
+
+        .repair-hint.show { opacity: 0; visibility: hidden; }
+
+        .repair-hint .title {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+
+        .repair-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background: repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px);
+        }
+
+        .scene-container.before-repair .repair-overlay { opacity: 1; }
+
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            z-index: 50;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+            animation: gentleBounce 3s ease-in-out infinite;
+        }
+
+        .hotspot:nth-of-type(1) { animation-delay: 0s; }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .hotspot:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4)) brightness(1.2);
+            animation: none;
+        }
+
+        .hotspot::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 3px solid rgba(255,215,0,0.5);
+            border-radius: 50%;
+            animation: pulseRing 2s infinite;
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .character {
+            position: fixed;
+            width: 50px;
+            height: 90px;
+            transition: none;
+            z-index: 100;
+            filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.4));
+            pointer-events: none;
+            transform: translate(-50%, -100%);
+        }
+
+        .character.walking {
+            animation: walk 0.5s ease-in-out infinite;
+        }
+
+        @keyframes walk {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-3px) rotate(2deg); }
+        }
+
+        .text-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 92%;
+            max-width: 750px;
+            max-height: 85vh;
+            background: linear-gradient(135deg, rgba(255,250,240,0.98) 0%, rgba(245,235,215,0.98) 100%);
+            border-radius: 25px;
+            box-shadow: 0 40px 100px rgba(74,55,40,0.3), 0 0 0 1px rgba(139,115,85,0.3);
+            padding: 35px 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .text-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .text-panel::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 2px solid #c9b896;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .corner-decor {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.6;
+        }
+
+        .corner-decor.tl { top: 20px; left: 20px; border-top: 3px solid #c9a227; border-left: 3px solid #c9a227; }
+        .corner-decor.tr { top: 20px; right: 20px; border-top: 3px solid #c9a227; border-right: 3px solid #c9a227; }
+        .corner-decor.bl { bottom: 20px; left: 20px; border-bottom: 3px solid #c9a227; border-left: 3px solid #c9a227; }
+        .corner-decor.br { bottom: 20px; right: 20px; border-bottom: 3px solid #c9a227; border-right: 3px solid #c9a227; }
+
+        .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: linear-gradient(135deg, #8b7355, #6b5344);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: linear-gradient(135deg, #6b5344, #4a3728);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .location-title {
+            font-size: 2.2em;
+            color: #3a2a1a;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #c9b896;
+            position: relative;
+        }
+
+        .location-title::after {
+            content: '❀';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #faf6ed;
+            padding: 0 15px;
+            color: #c9a227;
+            font-size: 0.6em;
+        }
+
+        .classical-text {
+            font-size: 1.35em;
+            line-height: 2.2;
+            color: #2a1a0a;
+            text-align: center;
+            margin: 25px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%);
+            border-radius: 15px;
+            border-left: 4px solid #c9a227;
+            white-space: pre-line;
+            font-weight: 500;
+        }
+
+        .translation {
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: #4a3a2a;
+            text-indent: 2em;
+            margin: 20px 0;
+            padding: 0 10px;
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 22px;
+            background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+            border-radius: 18px;
+            border-left: 5px solid #d4a030;
+            position: relative;
+        }
+
+        .explanation::before {
+            content: '📜';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff9e6;
+            padding: 0 10px;
+            font-size: 1.2em;
+        }
+
+        .explanation h3 {
+            color: #8b6914;
+            font-size: 1.25em;
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        .explanation p {
+            font-size: 1em;
+            line-height: 1.85;
+            color: #5a4a3a;
+            padding-left: 25px;
+        }
+
+        .nav-hint {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(74,55,40,0.92);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 1em;
+            z-index: 500;
+            animation: fadeInUp 0.6s ease, floatHint 3s ease-in-out infinite;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes floatHint {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #c9a227, #d4af37, #c9a227);
+            transition: width 0.5s ease;
+            z-index: 1001;
+        }
+
+        .visited-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 60;
+        }
+
+        .visited-marker.show { opacity: 1; }
+
+        .location-label {
+            position: absolute;
+            background: rgba(74,55,40,0.95);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 70;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+
+        .hotspot:hover ~ .location-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.2em; letter-spacing: 0.3em; }
+            .text-panel { padding: 25px 20px; }
+            .classical-text { font-size: 1.1em; padding: 18px; }
+            .translation, .explanation p { font-size: 0.95em; }
+            .hotspot { font-size: 1.4em; }
+            .nav-hint { font-size: 0.9em; padding: 12px 22px; }
+            .compare-btn { padding: 10px 15px; font-size: 0.85em; }
+            .repair-hint { font-size: 0.9em; padding: 12px 18px; }
+        }
+
+        .ink-decoration {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: -1;
+        }
+
+        .ink-1 { top: 10%; right: 5%; width: 300px; height: 300px; background: radial-gradient(ellipse, #2a1a0a 0%, transparent 70%); border-radius: 50%; }
+        .ink-2 { bottom: 20%; left: 3%; width: 200px; height: 200px; background: radial-gradient(ellipse, #3a2a1a 0%, transparent 70%); border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progress"></div>
+    <div class="ink-decoration ink-1"></div>
+    <div class="ink-decoration ink-2"></div>
+    
+    <header class="header">
+        <h1><span class="title-main" onclick="showReview()">项脊轩</span><a href="javascript:void(0)" class="title-link" onclick="showInfo()">志</a></h1>
+        <p class="author">明 · <span class="author-link" onclick="showTimelinePopup()" style="color: #6b5344; text-decoration: none; border-bottom: 1px dashed #6b5344; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.color='#c9a227';this.style.borderBottomStyle='solid';" onmouseout="this.style.color='#6b5344';this.style.borderBottomStyle='dashed';">归有光</span></p>
+    </header>
+
+    <div class="popup-overlay" id="popupOverlay" onclick="closeInfo()"></div>
+    <div class="info-popup" id="infoPopup">
+        <button class="close-info" onclick="closeInfo()">×</button>
+        <h3>📜 关于"志"</h3>
+        <p>志：记，古代记叙事物，抒发情感的一种文体。志，记都是"杂记类"文体，这种文体常常灵活运用记叙，描写，议论，抒情等多种表达方式，来记人叙事，描摹对象，抒发怀抱。</p>
+    </div>
+
+    <!-- 归有光大事年表弹窗 -->
+    <div class="popup-overlay" id="timelineOverlay" onclick="closeTimelinePopup()"></div>
+    <div class="info-popup" id="timelinePopup" style="max-width: 400px;">
+        <button class="close-info" onclick="closeTimelinePopup()">×</button>
+        <h3>📜 归有光大事年表</h3>
+        <div style="text-align: left; font-size: 0.95em; line-height: 1.8;">
+            <p style="margin: 8px 0;"><strong>8岁</strong>，母亲周氏去世</p>
+            <p style="margin: 8px 0;"><strong>14岁</strong>，应童子试</p>
+            <p style="margin: 8px 0;"><strong>17岁</strong>，祖母夏氏去世</p>
+            <p style="margin: 8px 0;"><strong>18岁</strong>，写《项脊轩志》</p>
+            <p style="margin: 8px 0;"><strong>20岁</strong>，考中秀才第一名。同年，乡试落第</p>
+            <p style="margin: 8px 0;"><strong>23岁</strong>，乡试落第。魏氏来归</p>
+            <p style="margin: 8px 0;"><strong>26岁</strong>，乡试落第</p>
+            <p style="margin: 8px 0;"><strong>28岁</strong>，乡试落第，魏氏亡故</p>
+            <p style="margin: 8px 0;"><strong>29岁</strong>，乡试落第</p>
+            <p style="margin: 8px 0;"><strong>32岁</strong>，乡试不第</p>
+            <p style="margin: 8px 0;"><strong>33岁</strong>，续写《项脊轩志》</p>
+            <p style="margin: 8px 0;"><strong>35岁</strong>，乡试第二，中举人</p>
+            <p style="margin: 8px 0;"><strong>36岁至59岁</strong>，八次会试落第（八上公车不遇）</p>
+            <p style="margin: 8px 0;"><strong>60岁</strong>，中三甲进士</p>
+            <p style="margin: 8px 0;"><strong>64岁</strong>，去世</p>
+        </div>
+    </div>
+
+    <!-- 评价页面弹窗 -->
+    <div class="mother-text-overlay" id="reviewOverlay" onclick="closeReview()"></div>
+    <div class="mother-text-popup" id="reviewPopup" style="max-width: 650px;">
+        <button class="close-mother-text" onclick="closeReview()">×</button>
+        <h3 style="color: #8b6914; font-size: 1.4em; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #c9b896; padding-bottom: 15px;">💭 评点组评点指引</h3>
+        <div class="share-content" style="font-size: 1.05em; line-height: 2; color: #4a3a2a;">
+            <div class="share-item" style="margin-bottom: 18px; padding: 18px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                <h4 style="color: #8b6914; margin-bottom: 12px;">📌 评点维度</h4>
+                <ul style="margin-left: 20px; text-indent: 0;">
+                    <li style="margin-bottom: 15px;">视频呈现的细节是否与原文对应？</li>
+                    <li style="margin-bottom: 15px;">视频整体传达的情感是否与原文一致？</li>
+                    <li>原文中最打动你的点是什么？你从文字中读出了哪些视频未能呈现的情感或层次？</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评价量表弹窗 -->
+    <div class="evaluate-overlay" id="evaluateOverlay" onclick="closeEvaluatePopup()"></div>
+    <div class="evaluate-popup" id="evaluatePopup">
+        <button class="close-evaluate" onclick="closeEvaluatePopup()">×</button>
+        <h2 class="evaluate-title">📊 留言分享展</h2>
+        <div class="evaluate-container">
+            <div class="evaluate-left">
+                <h3 class="evaluate-subtitle">📝 仿写评价量表</h3>
+                <div class="evaluate-section">
+                    <h4>白描与留白</h4>
+                    <p>纯以物象、动作、细节说话，无一字直接抒情；情感从画面中自然渗出，有"不说破"的力量。如钱基博所评"着墨不多，萧然高寄，而有弦外之音"。</p>
+                </div>
+                <div class="evaluate-section">
+                    <h4>细节的典型性</h4>
+                    <p>所选细节独特、具体、有画面感，能以小见大。如童志斌所析"小鸟时来啄食"的"时"字之妙——细节本身就承载情感重量。</p>
+                </div>
+                <div class="evaluate-section">
+                    <h4>情感的克制与深度</h4>
+                    <p>表面淡然，内里暗流涌动。如郭天彪所析"室坏不修"背后的"几近绝望"——悲喜交织，不言而深。情感不单一，有层次。</p>
+                </div>
+            </div>
+            <div class="evaluate-right">
+                <h3 class="evaluate-subtitle">💬 评点评价量表</h3>
+                <div class="evaluate-section">
+                    <h4>情感把握</h4>
+                    <p>能精准捕捉文本所传递的情感，如"时光的怅惘"、"温存的孤寂"或"静默的哀思"，而非泛泛而谈"感人"。</p>
+                </div>
+                <div class="evaluate-section">
+                    <h4>细节品读</h4>
+                    <p>能聚焦某个字词、核心意象或细节，深入其肌理，品析其如何体现情感。</p>
+                </div>
+                <div class="evaluate-section">
+                    <h4>语言赏析</h4>
+                    <p>评点文本的语言风格。</p>
+                </div>
+                <div class="evaluate-section">
+                    <h4>个人体悟</h4>
+                    <p>能结合自我生命体验或审美经验进行评点，有点睛式的个人感悟。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 留言分享弹窗 -->
+    <div class="guestbook-overlay" id="guestbookOverlay" onclick="closeGuestbookPopup()"></div>
+    <div class="guestbook-popup" id="guestbookPopup">
+        <button class="close-guestbook" onclick="closeGuestbookPopup()">×</button>
+        <h2 class="guestbook-title">📖 留言分享展</h2>
+        <div class="guestbook-content">
+            <div class="guestbook-section" style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                <h3 style="color: #8b6914; margin-bottom: 12px; font-size: 1.1em;">1. 仿写 · 分享你的"光亮"或"潮湿"</h3>
+                <p style="line-height: 1.8; color: #4a3a2a; text-indent: 2em;">请仿照归有光的笔法，用白描、留白、细节刻画的方式，分享你人生中一个刻骨铭心的片段。</p>
+            </div>
+            <div class="guestbook-section" style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                <h3 style="color: #8b6914; margin-bottom: 12px; font-size: 1.1em;">2. 评点 · 写下你的"一段话评点"</h3>
+                <p style="line-height: 1.8; color: #4a3a2a; margin-bottom: 15px;">请仿照前人的评价，针对《项脊轩志》某一片段或整体，写下你的评点。</p>
+                <button onclick="showAllReviewsPopup()" style="padding: 10px 20px; background: linear-gradient(135deg, #8b6914, #6b5344); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-bottom: 15px;">📚 前人评点</button>
+                <div class="quote-list" style="font-size: 0.95em; line-height: 2;">
+                    <p style="margin-bottom: 12px; text-indent: 2em;">·"雨泽下注"不直接写如何残破，只写具效果之富有特者："泽""注"，仅二学，可见屋漏之甚。——孙绍振</p>
+                    <p style="margin-bottom: 12px; text-indent: 2em;">·"借书满架"："借"字好，"满"字好，好在意脉雅意递增。修葺之意不在居，而在书。穷闲无书，乃借。借而满架，可听其"志"。项脊轩之"志"意当于此乎？意脉稍扬：由超越困苦而自慰也。——孙绍振</p>
+                    <p style="margin-bottom: 12px; text-indent: 2em;">·作者把"室坏不修"的事实放在"吾妻死"之后，意在告诉读者，妻子之死，让他悲伤几近绝望，更无心思关注其他的事情。——郭天彪</p>
+                    <p style="margin-bottom: 12px; text-indent: 2em;">·所以寄其悼亡之思，着墨不多，萧然高寄，而有弦外之音。——钱基博</p>
+                    <p style="text-indent: 2em;">·震川既丧母，而又悼亡，无可寄托，寄之于一小轩：先叙其母，悲极矣。再写枇杷之树，念其妻之所手植，又适在此轩之庭，睹物怀人，能毋恫耶！凡文人之有性情者，以文学感人，真有不能不动者：此文与其《先妣事略》同一机轴，而又不相复沓，所以为佳。——林纾</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评点写作支架弹窗 -->
+    <div class="mother-text-overlay" id="writingGuideOverlay" onclick="closeWritingGuidePopup()"></div>
+    <div class="mother-text-popup" id="writingGuidePopup" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+        <button class="close-mother-text" onclick="closeWritingGuidePopup()">×</button>
+        <h3 style="color: #8b6914; text-align: center; margin-bottom: 20px; font-size: 1.3em;">📋 "评点"写作支架</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <tr style="background: linear-gradient(135deg, #8b6914, #6b5344); color: #fff;">
+                <th style="padding: 12px 15px; text-align: left; border: 1px solid #d4c4a8;">核心维度</th>
+                <th style="padding: 12px 15px; text-align: left; border: 1px solid #d4c4a8;">评价标准</th>
+            </tr>
+            <tr style="background: rgba(245, 235, 215, 0.8);">
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; font-weight: bold; color: #8b6914;">情感把握</td>
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; line-height: 1.8;">能精准捕捉文本所传递的情感，如"时光的怅惘"、"温存的孤寂"或"静默的哀思"，而非泛泛而谈"感人"。</td>
+            </tr>
+            <tr style="background: rgba(255, 250, 240, 0.8);">
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; font-weight: bold; color: #8b6914;">细节品读</td>
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; line-height: 1.8;">能聚焦某个字词、核心意象或细节，深入其肌理，品析其如何体现情感。</td>
+            </tr>
+            <tr style="background: rgba(245, 235, 215, 0.8);">
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; font-weight: bold; color: #8b6914;">语言赏析</td>
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; line-height: 1.8;">能点评文本的语言风格。</td>
+            </tr>
+            <tr style="background: rgba(255, 250, 240, 0.8);">
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; font-weight: bold; color: #8b6914;">个人体悟</td>
+                <td style="padding: 12px 15px; border: 1px solid #d4c4a8; line-height: 1.8;">能结合自我生命体验或审美经验进行点评，有点睛式的个人感悟。</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 名家评点弹窗 -->
+    <div class="mother-text-overlay" id="allReviewsOverlay" onclick="closeAllReviewsPopup()"></div>
+    <div class="mother-text-popup" id="allReviewsPopup" style="max-width: 650px; max-height: 80vh; overflow-y: auto;">
+        <button class="close-mother-text" onclick="closeAllReviewsPopup()">×</button>
+        <h3 style="color: #8b6914; text-align: center; margin-bottom: 20px; font-size: 1.3em;">📜 名家评点</h3>
+        <div class="mother-text-content" style="line-height: 2.2; text-align: left;">
+            <p style="margin-bottom: 20px; text-indent: 2em;">"迨"字好，只一字，便引出庭院之今昔之变。"异爨"，不说分家，"爨"为本文唯一古奥词语，极显委婉、精练。避言家族之解，亲情之衰，只以效果（分灶）呈示。<br><span style="color: #8b6914; font-weight: bold;">——孙绍振</span></p>
+            <p style="margin-bottom: 20px; text-indent: 2em;">作者把"室坏不修"的事实放在"吾妻死"之后，意在告诉读者，妻子之死，让他悲伤几近绝望，更无心思关注其他的事情。<br><span style="color: #8b6914; font-weight: bold;">——郭天彪</span></p>
+            <p style="margin-bottom: 20px; text-indent: 2em;">所以寄其悼亡之思，着墨不多，萧然高寄，而有弦外之音。<br><span style="color: #8b6914; font-weight: bold;">——钱基博</span></p>
+            <p style="margin-bottom: 20px; text-indent: 2em;">震川既丧母，而又悼亡，无可寄托，寄之于一小轩：先叙其母，悲极矣。再写枇杷之树，念其妻之所手植，又适在此轩之庭，睹物怀人，能毋恫耶！凡文人之有性情者，以文学感人，真有不能不动者：此文与其《先妣事略》同一机轴，而又不相复沓，所以为佳。<br><span style="color: #8b6914; font-weight: bold;">——林纾《古文辞类纂》</span></p>
+            <p style="text-indent: 2em;">不事雕饰，而自有风味。<br><span style="color: #8b6914; font-weight: bold;">——王世贞</span></p>
+        </div>
+    </div>
+
+    <div class="scene-container before-repair" id="scene">
+        <div class="courtyard">
+            <svg class="mountains" viewBox="0 0 1200 200" preserveAspectRatio="none">
+                <path d="M0,200 L0,120 Q100,60 200,100 Q350,30 500,80 Q650,20 800,70 Q950,40 1100,90 L1200,60 L1200,200 Z" fill="#9cb8a8" opacity="0.5"/>
+                <path d="M0,200 L0,140 Q150,90 300,120 Q450,70 600,110 Q750,60 900,100 Q1050,80 1200,120 L1200,200 Z" fill="#8ba898" opacity="0.4"/>
+            </svg>
+
+            <div class="wall"></div>
+
+            <div class="ground"></div>
+            <div class="path"></div>
+
+            <div class="repair-overlay"></div>
+        </div>
+
+        <!-- 祖宅之变按钮 -->
+        <button class="new-page-btn" id="newPageBtn" onclick="toggleAncestralHome()">
+            <span class="icon">🏯</span>
+            <span class="text">祖宅之变</span>
+        </button>
+
+        <!-- 留言分享主页按钮 -->
+        <button class="compare-btn" id="homeBtn" onclick="showHomePage()">
+            <span class="icon">💬</span>
+            <span class="text">留言分享</span>
+        </button>
+
+        <!-- 人事之变按钮 -->
+        <button class="compare-btn" id="compareBtn" onclick="toggleRepair()">
+            <span class="icon">👤</span>
+            <span class="text">人事之变</span>
+        </button>
+
+        <!-- 归家祖宅页面的文字和视频按钮 -->
+        <div class="ancestral-buttons">
+            <button class="ancestral-text-btn" onclick="showNewPageText()">📜 查看原文</button>
+            <button class="ancestral-video-btn" onclick="showNewPageVideo()">🎬 播放视频</button>
+            <button class="ancestral-comment-btn" onclick="showBookCommentPopup()">💬 名家评点</button>
+        </div>
+
+        <!-- 留言分享页面的按钮 -->
+        <div class="guestbook-buttons">
+            <button class="guestbook-btn" onclick="showWritingGuidePopup()">💡 评点提示</button>
+            <button class="guestbook-btn" onclick="showAllReviewsPopup()">📚 前人评点</button>
+        </div>
+
+        <!-- 左下角图标组 -->
+        <div class="bottom-icons">
+            <!-- 火把图标组容器 -->
+            <div class="torch-icon-group">
+                <!-- 火"火"字按钮 -->
+                <button class="huo-text-btn always-show" onclick="showHuoPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">火</text>
+                    </svg>
+                </button>
+                <!-- 轩火图标 -->
+                <div class="small-icon always-show" onclick="showXuanhuoPopup()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <!-- 火把柄 -->
+                        <rect x="18" y="24" width="4" height="12" fill="#8b6914"/>
+                        <!-- 火焰 -->
+                        <ellipse cx="20" cy="14" rx="6" ry="8" fill="#ff6b35"/>
+                        <ellipse cx="20" cy="16" rx="4" ry="6" fill="#ffa500"/>
+                        <ellipse cx="20" cy="18" rx="2" ry="4" fill="#ffcc00"/>
+                        <!-- 火星 -->
+                        <circle cx="16" cy="10" r="1" fill="#ffcc00"/>
+                        <circle cx="24" cy="8" r="1" fill="#ffa500"/>
+                        <circle cx="20" cy="6" r="1.5" fill="#ff6b35"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 母亲图标组容器（垂直排列） -->
+            <div class="mother-icon-group">
+                <!-- 老妪"母"字按钮 -->
+                <button class="mu-text-btn always-show" onclick="showLaoyuPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">母</text>
+                    </svg>
+                </button>
+                <!-- 母亲文字按钮 -->
+                <button class="mother-text-btn always-show" onclick="showMotherTextPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">文</text>
+                    </svg>
+                </button>
+                <!-- 母亲图标（修缮前后都显示） -->
+                <div class="small-icon always-show" onclick="showMotherPopup()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <ellipse cx="20" cy="16" rx="7" ry="8" fill="#d4a574"/>
+                        <ellipse cx="20" cy="28" rx="9" ry="5" fill="#8b7355"/>
+                        <path d="M13 14 Q20 6 27 14" fill="#3a2a1a"/>
+                        <ellipse cx="20" cy="9" rx="5" ry="3" fill="#3a2a1a"/>
+                        <circle cx="17" cy="15" r="1.5" fill="#333"/>
+                        <circle cx="23" cy="15" r="1.5" fill="#333"/>
+                        <path d="M15 13 Q17 12 19 13" stroke="#3a2a1a" stroke-width="0.8" fill="none"/>
+                        <path d="M21 13 Q23 12 25 13" stroke="#3a2a1a" stroke-width="0.8" fill="none"/>
+                        <path d="M18 19 Q20 21 22 19" stroke="#c9a277" stroke-width="1.2" fill="none"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 奶奶图标组容器 -->
+            <div class="grandma-icon-group">
+                <!-- 祖母"祖"字按钮 -->
+                <button class="zu-text-btn always-show" onclick="showZuPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">祖</text>
+                    </svg>
+                </button>
+                <!-- 奶奶象笏按钮 -->
+                <button class="grandma-text-btn always-show" onclick="showXianghuPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">笏</text>
+                    </svg>
+                </button>
+                <!-- 奶奶图标（修缮前后都显示） -->
+                <div class="small-icon always-show" onclick="showGrandmaVideoPopup()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <ellipse cx="20" cy="16" rx="8" ry="9" fill="#d4a574"/>
+                        <ellipse cx="20" cy="30" rx="10" ry="6" fill="#8b7355"/>
+                        <path d="M12 12 Q20 4 28 12" fill="#666" stroke="#555" stroke-width="1"/>
+                        <circle cx="20" cy="8" r="3" fill="#666"/>
+                        <circle cx="17" cy="15" r="1.5" fill="#333"/>
+                        <circle cx="23" cy="15" r="1.5" fill="#333"/>
+                        <path d="M18 20 Q20 22 22 20" stroke="#8b6914" stroke-width="1" fill="none"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 房子图标组容器 -->
+            <div class="grandma-icon-group house-icon-group">
+                <!-- 轩字按钮 -->
+                <button class="grandma-text-btn always-show" onclick="showXuanTextPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="9" fill="#fff">轩</text>
+                    </svg>
+                </button>
+                <!-- 房子图标 -->
+                <div class="small-icon always-show" onclick="showHouseVideoPopup()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <!-- 屋顶 -->
+                        <path d="M6 18 L20 8 L34 18 Z" fill="#8b6914"/>
+                        <!-- 墙壁 -->
+                        <rect x="10" y="18" width="20" height="14" fill="#d4c4a8"/>
+                        <!-- 门 -->
+                        <rect x="16" y="24" width="8" height="8" fill="#6b5344"/>
+                        <!-- 窗户 -->
+                        <rect x="12" y="20" width="4" height="4" fill="#c9a227"/>
+                        <rect x="24" y="20" width="4" height="4" fill="#c9a227"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 凳子手帕图标组容器 -->
+            <div class="handkerchief-icon-group">
+                <!-- 评按钮 -->
+                <button class="qi-text-btn ping-btn always-show" onclick="showQiCommentPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="9" fill="#fff">评</text>
+                    </svg>
+                </button>
+                <!-- 妻子"妻"字按钮 -->
+                <button class="qi-text-btn always-show" onclick="showQiPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="10" fill="#fff">妻</text>
+                    </svg>
+                </button>
+                <!-- 两个人头图标（一男一女） -->
+                <div class="small-icon always-show" onclick="showStoolPopup()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <!-- 男人头像（左侧） -->
+                        <circle cx="13" cy="14" r="5" fill="#d4a574"/>
+                        <ellipse cx="13" cy="22" rx="6" ry="4" fill="#8b7355"/>
+                        <path d="M8 10 Q13 6 18 10" fill="#3a2a1a"/>
+                        <circle cx="11" cy="13" r="1" fill="#333"/>
+                        <circle cx="15" cy="13" r="1" fill="#333"/>
+                        <path d="M11 16 Q13 17 15 16" stroke="#8b6914" stroke-width="0.8" fill="none"/>
+                        <!-- 女人头像（右侧） -->
+                        <circle cx="27" cy="14" r="5" fill="#d4a574"/>
+                        <ellipse cx="27" cy="22" rx="6" ry="4" fill="#8b7355"/>
+                        <path d="M22 8 Q27 4 32 8" fill="#3a2a1a"/>
+                        <ellipse cx="27" cy="6" rx="4" ry="2" fill="#3a2a1a"/>
+                        <circle cx="25" cy="13" r="1" fill="#333"/>
+                        <circle cx="29" cy="13" r="1" fill="#333"/>
+                        <path d="M25 16 Q27 17 29 16" stroke="#c9a277" stroke-width="0.8" fill="none"/>
+                    </svg>
+                </div>
+            </div>
+            <!-- 大树图标组容器 -->
+            <div class="grandma-icon-group tree-icon-group">
+                <!-- 评按钮 -->
+                <button class="grandma-text-btn ping-btn always-show" onclick="showWifeCommentPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="9" fill="#fff">评</text>
+                    </svg>
+                </button>
+                <!-- 大树"树"字按钮 -->
+                <button class="grandma-text-btn always-show" onclick="showTreeTextPopup()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="#8b7355" stroke="#6b5344" stroke-width="1.5"/>
+                        <text x="10" y="14" text-anchor="middle" font-size="9" fill="#fff">树</text>
+                    </svg>
+                </button>
+                <!-- 大树图标 -->
+                <div class="small-icon always-show brush-icon" onclick="showWifeDeadScene()">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#8b7355" stroke="#6b5344" stroke-width="2"/>
+                        <!-- 树干 -->
+                        <rect x="16" y="22" width="8" height="14" fill="#8b6914"/>
+                        <rect x="18" y="20" width="4" height="16" fill="#6b5344"/>
+                        <!-- 大树冠 -->
+                        <ellipse cx="20" cy="14" rx="14" ry="12" fill="#4a7c59"/>
+                        <ellipse cx="14" cy="12" rx="8" ry="7" fill="#5a8c69"/>
+                        <ellipse cx="26" cy="12" rx="8" ry="7" fill="#5a8c69"/>
+                        <ellipse cx="20" cy="8" rx="10" ry="8" fill="#6b9c79"/>
+                        <!-- 叶子细节 -->
+                        <ellipse cx="10" cy="16" rx="4" ry="3" fill="#3a6c49"/>
+                        <ellipse cx="30" cy="16" rx="4" ry="3" fill="#3a6c49"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 象笏图片弹窗 -->
+        <div class="image-overlay" id="imageOverlay" onclick="closeImagePopup()"></div>
+        <div class="image-popup" id="imagePopup">
+            <button class="close-image" onclick="closeImagePopup()">×</button>
+            <img src="象笏.jpg" alt="象笏">
+        </div>
+
+        <!-- 奶奶文字弹窗 -->
+        <div class="mother-text-overlay" id="grandmaTextOverlay" onclick="closeGrandmaTextPopup()"></div>
+        <div class="mother-text-popup" id="grandmaTextPopup">
+            <button class="close-mother-text" onclick="closeGrandmaTextPopup()">×</button>
+            <p class="mother-text-content">此处可添加奶奶相关文字内容</p>
+        </div>
+
+        <!-- 轩火视频弹窗 -->
+        <div class="mother-overlay" id="xuanhuoVideoOverlay" onclick="closeXuanhuoPopup()"></div>
+        <div class="mother-popup" id="xuanhuoVideoPopup">
+            <button class="close-mother" onclick="closeXuanhuoPopup()">×</button>
+            <video src="视频/赖珈珮-轩火.mp4" controls></video>
+        </div>
+
+        <!-- 火文字弹窗 -->
+        <div class="mother-text-overlay" id="huoTextOverlay" onclick="closeHuoPopup()"></div>
+        <div class="mother-text-popup" id="huoTextPopup">
+            <button class="close-mother-text" onclick="closeHuoPopup()">×</button>
+            <p class="mother-text-content" style="text-align: left; text-indent: 0;">
+轩东，故<strong style="color: #8B0000;">尝</strong>为厨，人往，从轩前过。余扃牖而居，之<strong style="color: #8B0000;">久</strong>，能以足音辨人。轩<strong style="color: #8B0000;">凡</strong>四遭火，得不焚，殆有神护者。
+            </p>
+        </div>
+
+        <!-- 妻子文字弹窗 -->
+        <div class="mother-text-overlay" id="qiTextOverlay" onclick="closeQiPopup()"></div>
+        <div class="mother-text-popup" id="qiTextPopup">
+            <button class="close-mother-text" onclick="closeQiPopup()">×</button>
+            <p class="mother-text-content" style="text-align: left; text-indent: 0;">
+<strong style="color: #8B0000;">既</strong>为此志，<strong style="color: #8B0000;">后</strong>五年，吾妻来归，时至轩中，从余问古事，或凭几学书。吾妻归宁，述诸小妹语曰："闻姊家有阁子，且何谓阁子也？" <strong style="color: #8B0000;">其后</strong>六年，吾妻死，室坏不修。<strong style="color: #8B0000;">其后</strong>二年，余久卧病无聊，乃使人复葺南阁子，其制稍异于前。然自后余多在外，不常居。
+            </p>
+        </div>
+
+        <!-- 妻子评点弹窗 -->
+        <div class="mother-text-overlay" id="wifeCommentOverlay" onclick="closeWifeCommentPopup()"></div>
+        <div class="mother-text-popup" id="wifeCommentPopup">
+            <button class="close-mother-text" onclick="closeWifeCommentPopup()">×</button>
+            <p class="mother-text-content">所以寄其悼亡之思，着墨不多，萧然高寄，而有弦外之音。<br><span class="source">——钱基博</span></p>
+        </div>
+
+        <!-- 妻子室坏不修评点弹窗 -->
+        <div class="mother-text-overlay" id="qiCommentOverlay" onclick="closeQiCommentPopup()"></div>
+        <div class="mother-text-popup" id="qiCommentPopup">
+            <button class="close-mother-text" onclick="closeQiCommentPopup()">×</button>
+            <p class="mother-text-content">作者把"室坏不修"的事实放在"吾妻死"之后，意在告诉读者，妻子之死，让他悲伤几近绝望，更无心思关注其他的事情。<br><span class="source">——郭天彪</span></p>
+        </div>
+
+        <!-- 枇杷树文字弹窗 -->
+        <div class="mother-text-overlay" id="treePopupOverlay" onclick="closeTreeTextPopup()"></div>
+        <div class="mother-text-popup" id="treePopup">
+            <button class="close-mother-text" onclick="closeTreeTextPopup()">×</button>
+            <p class="mother-text-content" style="text-align: left; text-indent: 0;">
+庭有枇杷树，吾妻死之年所手植也，今已亭亭如盖矣。
+            </p>
+        </div>
+
+        <!-- 曾希樾祖母视频弹窗 -->
+        <div class="mother-overlay" id="grandmaVideoOverlay" onclick="closeGrandmaVideoPopup()"></div>
+        <div class="mother-popup" id="grandmaVideoPopup">
+            <button class="close-mother" onclick="closeGrandmaVideoPopup()">×</button>
+            <video src="视频/曾希樾 祖母.mp4" controls></video>
+        </div>
+
+        <!-- 房子修缮庭院视频弹窗 -->
+        <div class="mother-overlay" id="houseVideoOverlay" onclick="closeHouseVideoPopup()"></div>
+        <div class="mother-popup" id="houseVideoPopup">
+            <button class="close-mother" onclick="closeHouseVideoPopup()">×</button>
+            <video src="生成修缮庭院视频.mp4" controls></video>
+        </div>
+
+        <!-- 轩文字弹窗 -->
+        <div class="mother-text-overlay" id="xuanTextOverlay" onclick="closeXuanTextPopup()"></div>
+        <div class="mother-text-popup" id="xuanTextPopup">
+            <button class="close-mother-text" onclick="closeXuanTextPopup()">×</button>
+            <p class="mother-text-content" style="text-align: left; text-indent: 2em; line-height: 2;">
+项脊轩，旧南阁子也。室<strong style="color: #8B0000;">仅</strong>方丈，可容一人居。百年老屋，尘泥渗漉，雨泽下注，每移案，顾视无可置者。<strong style="color: #8B0000;">又</strong>北向，不能得日，日过午已昏。余<strong style="color: #8B0000;">稍</strong>为修葺，使不上漏。前辟四窗，垣墙周庭，以当南日，日影反照，室始洞然。<strong style="color: #8B0000;">又</strong>杂植兰桂竹木于庭，<strong style="color: #8B0000;">旧</strong>时栏楯亦遂增胜。借书满架，偃仰啸歌，冥然兀坐，万籁有声。<strong style="color: #8B0000;">而</strong>庭阶寂寂，小鸟时来啄食，人至不去。三五之夜，明月半墙，桂影斑驳，风移影动，珊珊可爱。
+            </p>
+        </div>
+
+        <!-- 祖母文字弹窗 -->
+        <div class="mother-text-overlay" id="zuTextOverlay" onclick="closeZuPopup()"></div>
+        <div class="mother-text-popup" id="zuTextPopup">
+            <button class="close-mother-text" onclick="closeZuPopup()">×</button>
+            <p class="mother-text-content" style="text-align: left; text-indent: 0;">
+余<strong style="color: #8B0000;">自</strong>束发读书轩中，一日，大母过余曰："吾儿，久不见若影，何竟日默默在此，大类女郎也？"比去，以手阖门，自语曰："吾家读书久不效，儿之成，则可待乎？" <strong style="color: #8B0000;">顷</strong>之，持一象笏至，曰："此吾祖太常公宣德间执此以朝，他日汝当用之。"瞻顾遗迹，如在昨日，令人长号不自禁。
+            </p>
+        </div>
+
+        <!-- 母亲图片弹窗 -->
+        <div class="mother-overlay" id="motherOverlay" onclick="closeMotherPopup()"></div>
+        <div class="mother-popup" id="motherPopup">
+            <button class="close-mother" onclick="closeMotherPopup()">×</button>
+            <video src="视频/潘叙燕 儿寒乎.mp4" controls></video>
+        </div>
+
+        <!-- 母亲文字弹窗 -->
+        <div class="mother-text-overlay" id="motherTextOverlay" onclick="closeMotherTextPopup()"></div>
+        <div class="mother-text-popup" id="motherTextPopup">
+            <button class="close-mother-text" onclick="closeMotherTextPopup()">×</button>
+            <p class="mother-text-content">正德八年五月二十三日，孺人卒。诸儿见家人泣，则随之泣，然犹以为母寝也。伤哉！<br><span class="source">——《先妣事略》</span></p>
+        </div>
+
+        <!-- 制作组分享弹窗 -->
+        <div class="mother-text-overlay" id="shareOverlay" onclick="closeSharePopup()"></div>
+        <div class="mother-text-popup" id="sharePopup" style="max-width: 650px;">
+            <button class="close-mother-text" onclick="closeSharePopup()">×</button>
+            <h3 style="color: #8b6914; font-size: 1.4em; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #c9b896; padding-bottom: 15px;">🎬 制作组分享</h3>
+            <div class="share-content" style="font-size: 1.05em; line-height: 2; color: #4a3a2a;">
+                <div class="share-item" style="margin-bottom: 18px; padding: 15px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 8px;">① 我们抓取了哪些原文细节？</h4>
+                    <p style="text-indent: 2em;">直接说出选取的关键词句（如"以指叩门"等）</p>
+                </div>
+                <div class="share-item" style="margin-bottom: 18px; padding: 15px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 8px;">② 我们用什么画面/手法呈现？</h4>
+                    <p style="text-indent: 2em;">简要说明色调、镜头（特写/远景）、转场、配乐、字幕等设计意图</p>
+                </div>
+                <div class="share-item" style="margin-bottom: 18px; padding: 15px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 8px;">③ 我们希望传递什么情感？</h4>
+                    <p style="text-indent: 2em;">用一两个词概括核心情感基调（如"温情的追忆"等）</p>
+                </div>
+                <div class="share-item" style="margin-bottom: 18px; padding: 15px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 8px;">④ 我们的不足之处</h4>
+                    <p style="text-indent: 2em;">说出最不满意或最难呈现的一处</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 评点弹窗 -->
+        <div class="mother-text-overlay" id="reviewOverlay" onclick="closeReviewPopup()"></div>
+        <div class="mother-text-popup" id="reviewPopup" style="max-width: 680px;">
+            <button class="close-mother-text" onclick="closeReviewPopup()">×</button>
+            <h3 style="color: #8b6914; font-size: 1.4em; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #c9b896; padding-bottom: 15px;">💭 评点组评点指引</h3>
+            <div class="review-content" style="font-size: 1em; line-height: 1.8; color: #4a3a2a;">
+                <div class="review-section" style="margin-bottom: 20px; padding: 18px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 12px;">📌 评点维度</h4>
+                    <ul style="margin-left: 20px; text-indent: 0;">
+                        <li style="margin-bottom: 10px;">视频呈现的细节是否与原文对应？</li>
+                        <li>视频整体传达的情感是否与原文一致？</li>
+                    </ul>
+                </div>
+                <div class="review-section" style="margin-bottom: 20px; padding: 18px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 12px;">🎯 情感对照</h4>
+                    <ul style="margin-left: 20px; text-indent: 0;">
+                        <li style="margin-bottom: 10px;">原文中最打动你的点是什么？</li>
+                        <li>你从文字中读出了哪些视频未能呈现的情感或层次？</li>
+                    </ul>
+                </div>
+                <div class="review-section" style="margin-bottom: 20px; padding: 18px; background: linear-gradient(135deg, rgba(201,184,150,0.15) 0%, rgba(201,184,150,0.05) 100%); border-radius: 12px; border-left: 4px solid #c9a227;">
+                    <h4 style="color: #8b6914; margin-bottom: 12px;">💡 关键词提示</h4>
+                    <ul style="margin-left: 20px; text-indent: 0; font-style: italic;">
+                        <li style="margin-bottom: 10px;">"你们抓住了______这个细节，但______。"</li>
+                        <li style="margin-bottom: 10px;">"原文给我的感觉是______，视频传达的是______，二者______。"</li>
+                        <li>"我自己读原文______时，还感受到了______。"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 房子评论弹窗 -->
+        <div class="mother-text-overlay" id="houseCommentOverlay" onclick="closeHouseCommentPopup()"></div>
+        <div class="mother-text-popup" id="houseCommentPopup" style="max-width: 750px;">
+            <button class="close-mother-text" onclick="closeHouseCommentPopup()">×</button>
+            <h3 style="color: #8b6914; font-size: 1.2em; margin-bottom: 15px; text-align: center; border-bottom: 2px solid #c9b896; padding-bottom: 12px;">🏡 项脊轩描写</h3>
+            <p class="mother-text-content" style="line-height: 2.2; font-size: 1.1em;">
+                项脊轩，旧南阁子也。<span style="color: #8B0000; font-weight: bold;">仅</span>方丈，可容一人居。百年老屋，尘泥渗漉，雨泽下注，每移案，顾视无可置者。<span style="color: #8B0000; font-weight: bold;">又</span>北向，不能得日，日过午已昏。余<span style="color: #8B0000; font-weight: bold;">稍</span>为修葺，使不上漏。<span style="color: #8B0000; font-weight: bold;">又</span>辟四窗，垣墙周庭，以当南日，日影反照，室始洞然。<span style="color: #8B0000; font-weight: bold;">而</span>庭阶寂寂，小鸟时来啄食，人至不去。三五之夜，明月半墙，桂影斑驳，风移影动，珊珊可爱。
+            </p>
+        </div>
+
+        <!-- 借书评论弹窗 -->
+        <div class="mother-text-overlay" id="bookCommentOverlay" onclick="closeBookCommentPopup()"></div>
+        <div class="mother-text-popup" id="bookCommentPopup">
+            <button class="close-mother-text" onclick="closeBookCommentPopup()">×</button>
+            <p class="mother-text-content">"迨"字好，只一字，便引出庭院之今昔之变。"异爨"，不说分家，"爨"为本文唯一古奥词语，极显委婉、精练。避言家族之解，亲情之衰，只以效果（分灶）呈示。<br><span class="source">——孙绍振</span></p>
+        </div>
+
+        <!-- 凳子手帕图片弹窗 -->
+        <div class="stool-overlay" id="stoolOverlay" onclick="closeStoolPopup()"></div>
+        <div class="stool-popup" id="stoolPopup">
+            <button class="close-stool" onclick="closeStoolPopup()">×</button>
+            <video src="视频/陈铭浩-5.mp4" controls></video>
+        </div>
+
+        <!-- 钱基博评论弹窗 -->
+        <div class="mother-text-overlay" id="commentOverlay" onclick="closeCommentPopup()"></div>
+        <div class="mother-text-popup" id="commentPopup">
+            <button class="close-mother-text" onclick="closeCommentPopup()">×</button>
+            <p class="mother-text-content">所以寄其悼亡之思，着墨不多，萧然高寄，而有弦外之音。——钱基博</p>
+        </div>
+
+        <!-- 小树苗评论弹窗 -->
+        <div class="mother-text-overlay" id="treeCommentOverlay" onclick="closeTreeCommentPopup()"></div>
+        <div class="mother-text-popup" id="treeCommentPopup">
+            <button class="close-mother-text" onclick="closeTreeCommentPopup()">×</button>
+            <p class="mother-text-content">作者把"室坏不修"的事实放在"吾妻死"之后，意在告诉读者，妻子之死，让他悲伤几近绝望，更无心思关注其他的事情。——郭天彪</p>
+        </div>
+
+        <!-- 大树文字弹窗 -->
+        <div class="mother-text-overlay" id="treeTextOverlay" onclick="closeTreeTextPopup()"></div>
+        <div class="mother-text-popup" id="treeTextPopup">
+            <button class="close-mother-text" onclick="closeTreeTextPopup()">×</button>
+            <p class="mother-text-content" style="font-size: 1.3em; line-height: 2;">庭有枇杷树，<br>吾妻死之年所手植也，<br>今已亭亭如盖矣。</p>
+        </div>
+
+
+            </svg>
+        </div>
+
+
+        <div class="character" id="character">
+            <svg viewBox="0 0 50 90">
+                <ellipse cx="25" cy="88" rx="12" ry="4" fill="rgba(0,0,0,0.2)"/>
+                <path d="M18,35 L20,85 L30,85 L32,35 Z" fill="#3a2a1a"/>
+                <path d="M18,35 L20,85 L25,85 L25,40 Z" fill="#4a3a2a"/>
+                <path d="M12,38 L18,35 L18,65 L5,58 Z" fill="#4a3a2a"/>
+                <path d="M38,38 L32,35 L32,65 L45,58 Z" fill="#4a3a2a"/>
+                <rect x="18" y="42" width="14" height="4" fill="#8b6914"/>
+                <ellipse cx="25" cy="28" rx="11" ry="12" fill="#d4a574"/>
+                <ellipse cx="25" cy="18" rx="10" ry="7" fill="#2a1a0a"/>
+                <path d="M20,14 Q25,6 30,14" fill="#2a1a0a"/>
+                <circle cx="25" cy="8" r="4" fill="#2a1a0a"/>
+                <path d="M18,22 Q25,26 32,22" stroke="#8b6914" stroke-width="1.5" fill="none"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="text-panel" id="textPanel">
+        <div class="corner-decor tl"></div>
+        <div class="corner-decor tr"></div>
+        <div class="corner-decor bl"></div>
+        <div class="corner-decor br"></div>
+        <button class="close-btn" onclick="closePanel()">×</button>
+        <h2 class="location-title" id="locationTitle">项脊轩</h2>
+        <div class="classical-text" id="classicalText"></div>
+        <div class="translation" id="translation"></div>
+        <div class="explanation">
+            <h3>📖 知识链接</h3>
+            <p id="explanationText"></p>
+        </div>
+    </div>
+
+    <script>
+        let isBeforeRepair = false;
+        let isWifeDeadPermanent = false;
+
+        function showHomePage() {
+            const scene = document.getElementById('scene');
+            const homeBtn = document.getElementById('homeBtn');
+            const compareBtn = document.getElementById('compareBtn');
+            const newPageBtn = document.getElementById('newPageBtn');
+            
+            // 移除其他状态
+            scene.classList.remove('before-repair', 'ancestral-home');
+            isBeforeRepair = false;
+            
+            // 更新按钮状态
+            homeBtn.classList.add('active');
+            compareBtn.classList.remove('active');
+            newPageBtn.classList.remove('active');
+            compareBtn.querySelector('.text').textContent = '项脊轩';
+            compareBtn.querySelector('.icon').textContent = '🔄';
+        }
+
+        function toggleAncestralHome() {
+            const scene = document.getElementById('scene');
+            const homeBtn = document.getElementById('homeBtn');
+            const compareBtn = document.getElementById('compareBtn');
+            const newPageBtn = document.getElementById('newPageBtn');
+            
+            // 切换归家祖宅状态
+            if (scene.classList.contains('ancestral-home')) {
+                scene.classList.remove('ancestral-home');
+                newPageBtn.classList.remove('active');
+            } else {
+                // 移除修缮前状态
+                scene.classList.remove('before-repair');
+                isBeforeRepair = false;
+                compareBtn.classList.remove('active');
+                compareBtn.querySelector('.text').textContent = '项脊轩';
+                compareBtn.querySelector('.icon').textContent = '🔄';
+                
+                // 添加归家祖宅状态
+                scene.classList.add('ancestral-home');
+                newPageBtn.classList.add('active');
+                homeBtn.classList.remove('active');
+            }
+        }
+
+        function showNewPageText() {
+            // 创建文字弹窗
+            const textPopup = document.createElement('div');
+            textPopup.id = 'newPageTextPopup';
+            textPopup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:linear-gradient(135deg,rgba(255,250,240,0.98),rgba(245,235,215,0.98));border-radius:20px;box-shadow:0 40px 100px rgba(74,55,40,0.3),0 0 0 2px #c9b896;padding:30px 35px;max-width:600px;opacity:0;visibility:hidden;transition:all 0.4s ease;z-index:300;';
+            
+            textPopup.innerHTML = `
+                <button onclick="closeNewPageText()" style="position:absolute;top:12px;right:15px;width:30px;height:30px;border:none;background:linear-gradient(135deg,#8b7355,#6b5344);color:#fff;border-radius:50%;font-size:1.2em;cursor:pointer;transition:all 0.3s;">×</button>
+                <p style="font-size:1.2em;line-height:2;color:#4a3a2a;text-indent:2em;white-space:pre-line;"><strong style="color:#8B0000;">先</strong>是庭中通南北为一。<strong style="color:#8B0000;">迨</strong>诸父异爨，内外多置小门墙，往往而是。东犬西吠，客逾庖而宴，鸡栖于厅。庭中<strong style="color:#8B0000;">始</strong>为篱，<strong style="color:#8B0000;">已</strong>为墙，<strong style="color:#8B0000;">凡</strong>再变矣。</p>
+            `;
+            
+            document.body.appendChild(textPopup);
+            setTimeout(() => {
+                textPopup.style.opacity = '1';
+                textPopup.style.visibility = 'visible';
+                textPopup.style.transform = 'translate(-50%,-50%) scale(1)';
+            }, 50);
+        }
+
+        function closeNewPageText() {
+            const textPopup = document.getElementById('newPageTextPopup');
+            if (textPopup) {
+                textPopup.style.opacity = '0';
+                textPopup.style.visibility = 'hidden';
+                textPopup.style.transform = 'translate(-50%,-50%) scale(0.9)';
+                setTimeout(() => textPopup.remove(), 400);
+            }
+        }
+
+        function showNewPageVideo() {
+            // 创建视频弹窗
+            const videoPopup = document.createElement('div');
+            videoPopup.id = 'newPageVideoPopup';
+            videoPopup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.4s ease;';
+            
+            videoPopup.innerHTML = `
+                <button onclick="closeNewPageVideo()" style="position:absolute;top:15px;right:15px;width:45px;height:45px;border:none;background:rgba(74,55,40,0.9);color:#fff;border-radius:50%;font-size:1.8em;cursor:pointer;z-index:10;transition:all 0.3s;">×</button>
+                <video src="祖宅变迁视频.mp4" controls style="max-width:85vw;max-height:75vh;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.5);"></video>
+            `;
+            
+            document.body.appendChild(videoPopup);
+            setTimeout(() => {
+                videoPopup.style.opacity = '1';
+                videoPopup.style.visibility = 'visible';
+            }, 50);
+        }
+
+        function closeNewPageVideo() {
+            const videoPopup = document.getElementById('newPageVideoPopup');
+            if (videoPopup) {
+                videoPopup.style.opacity = '0';
+                videoPopup.style.visibility = 'hidden';
+                // 停止视频播放
+                const video = videoPopup.querySelector('video');
+                if (video) video.pause();
+                setTimeout(() => videoPopup.remove(), 400);
+            }
+        }
+
+        function closeNewPage() {
+            const overlay = document.getElementById('newPageOverlay');
+            const textPopup = document.getElementById('newPageTextPopup');
+            const videoPopup = document.getElementById('newPageVideoPopup');
+            const btns = document.querySelectorAll('[id="newPageTextBtn"], [id="newPageVideoBtn"]');
+            
+            // 移除所有弹窗
+            if (overlay) overlay.remove();
+            if (textPopup) textPopup.remove();
+            if (videoPopup) videoPopup.remove();
+            // 移除按钮（通过查询特定样式）
+            btns.forEach(btn => btn.remove());
+            // 移除固定位置的所有按钮
+            const allBtns = document.body.querySelectorAll('button');
+            allBtns.forEach(btn => {
+                if (btn.style.position === 'fixed' && btn.style.zIndex === '3001') {
+                    btn.remove();
+                }
+            });
+        }
+
+        function showInfo() {
+            document.getElementById('infoPopup').classList.add('show');
+            document.getElementById('popupOverlay').classList.add('show');
+        }
+
+        function closeInfo() {
+            document.getElementById('infoPopup').classList.remove('show');
+            document.getElementById('popupOverlay').classList.remove('show');
+        }
+
+        function showTimelinePopup() {
+            document.getElementById('timelinePopup').classList.add('show');
+            document.getElementById('timelineOverlay').classList.add('show');
+        }
+
+        function closeTimelinePopup() {
+            document.getElementById('timelinePopup').classList.remove('show');
+            document.getElementById('timelineOverlay').classList.remove('show');
+        }
+
+        function showReview() {
+            document.getElementById('reviewPopup').classList.add('show');
+            document.getElementById('reviewOverlay').classList.add('show');
+        }
+
+        function closeReview() {
+            document.getElementById('reviewPopup').classList.remove('show');
+            document.getElementById('reviewOverlay').classList.remove('show');
+        }
+
+        function showEvaluatePopup() {
+            document.getElementById('evaluatePopup').classList.add('show');
+            document.getElementById('evaluateOverlay').classList.add('show');
+        }
+
+        function closeEvaluatePopup() {
+            document.getElementById('evaluatePopup').classList.remove('show');
+            document.getElementById('evaluateOverlay').classList.remove('show');
+        }
+
+        function showGuestbookPopup() {
+            document.getElementById('guestbookPopup').classList.add('show');
+            document.getElementById('guestbookOverlay').classList.add('show');
+        }
+
+        function closeGuestbookPopup() {
+            document.getElementById('guestbookPopup').classList.remove('show');
+            document.getElementById('guestbookOverlay').classList.remove('show');
+        }
+
+        function showAllReviewsPopup() {
+            document.getElementById('allReviewsPopup').classList.add('show');
+            document.getElementById('allReviewsOverlay').classList.add('show');
+        }
+
+        function closeAllReviewsPopup() {
+            document.getElementById('allReviewsPopup').classList.remove('show');
+            document.getElementById('allReviewsOverlay').classList.remove('show');
+        }
+
+        function showImagePopup() {
+            document.getElementById('imagePopup').classList.add('show');
+            document.getElementById('imageOverlay').classList.add('show');
+        }
+
+        function closeImagePopup() {
+            document.getElementById('imagePopup').classList.remove('show');
+            document.getElementById('imageOverlay').classList.remove('show');
+        }
+
+        function showXianghuPopup() {
+            document.getElementById('imagePopup').classList.add('show');
+            document.getElementById('imageOverlay').classList.add('show');
+        }
+
+        function showGrandmaTextPopup() {
+            document.getElementById('grandmaTextPopup').classList.add('show');
+            document.getElementById('grandmaTextOverlay').classList.add('show');
+        }
+
+        function closeGrandmaTextPopup() {
+            document.getElementById('grandmaTextPopup').classList.remove('show');
+            document.getElementById('grandmaTextOverlay').classList.remove('show');
+        }
+
+        function showGrandmaVideoPopup() {
+            document.getElementById('grandmaVideoPopup').classList.add('show');
+            document.getElementById('grandmaVideoOverlay').classList.add('show');
+        }
+
+        function closeGrandmaVideoPopup() {
+            document.getElementById('grandmaVideoPopup').classList.remove('show');
+            document.getElementById('grandmaVideoOverlay').classList.remove('show');
+        }
+
+        function showHouseVideoPopup() {
+            document.getElementById('houseVideoPopup').classList.add('show');
+            document.getElementById('houseVideoOverlay').classList.add('show');
+        }
+
+        function closeHouseVideoPopup() {
+            document.getElementById('houseVideoPopup').classList.remove('show');
+            document.getElementById('houseVideoOverlay').classList.remove('show');
+        }
+
+        function showXuanTextPopup() {
+            document.getElementById('xuanTextPopup').classList.add('show');
+            document.getElementById('xuanTextOverlay').classList.add('show');
+        }
+
+        function closeXuanTextPopup() {
+            document.getElementById('xuanTextPopup').classList.remove('show');
+            document.getElementById('xuanTextOverlay').classList.remove('show');
+        }
+
+        function showZuPopup() {
+            document.getElementById('zuTextPopup').classList.add('show');
+            document.getElementById('zuTextOverlay').classList.add('show');
+        }
+
+        function closeZuPopup() {
+            document.getElementById('zuTextPopup').classList.remove('show');
+            document.getElementById('zuTextOverlay').classList.remove('show');
+        }
+
+        function showXuanhuoPopup() {
+            document.getElementById('xuanhuoVideoPopup').classList.add('show');
+            document.getElementById('xuanhuoVideoOverlay').classList.add('show');
+        }
+
+        function closeXuanhuoPopup() {
+            document.getElementById('xuanhuoVideoPopup').classList.remove('show');
+            document.getElementById('xuanhuoVideoOverlay').classList.remove('show');
+        }
+
+        function showHuoPopup() {
+            document.getElementById('huoTextPopup').classList.add('show');
+            document.getElementById('huoTextOverlay').classList.add('show');
+        }
+
+        function closeHuoPopup() {
+            document.getElementById('huoTextPopup').classList.remove('show');
+            document.getElementById('huoTextOverlay').classList.remove('show');
+        }
+
+        function showQiPopup() {
+            document.getElementById('qiTextPopup').classList.add('show');
+            document.getElementById('qiTextOverlay').classList.add('show');
+        }
+
+        function closeQiPopup() {
+            document.getElementById('qiTextPopup').classList.remove('show');
+            document.getElementById('qiTextOverlay').classList.remove('show');
+        }
+
+        function showWifeCommentPopup() {
+            document.getElementById('wifeCommentPopup').classList.add('show');
+            document.getElementById('wifeCommentOverlay').classList.add('show');
+        }
+
+        function closeWifeCommentPopup() {
+            document.getElementById('wifeCommentPopup').classList.remove('show');
+            document.getElementById('wifeCommentOverlay').classList.remove('show');
+        }
+
+        function showQiCommentPopup() {
+            document.getElementById('qiCommentPopup').classList.add('show');
+            document.getElementById('qiCommentOverlay').classList.add('show');
+        }
+
+        function closeQiCommentPopup() {
+            document.getElementById('qiCommentPopup').classList.remove('show');
+            document.getElementById('qiCommentOverlay').classList.remove('show');
+        }
+
+        function showTreeTextPopup() {
+            document.getElementById('treePopup').classList.add('show');
+            document.getElementById('treePopupOverlay').classList.add('show');
+        }
+
+        function closeTreeTextPopup() {
+            document.getElementById('treePopup').classList.remove('show');
+            document.getElementById('treePopupOverlay').classList.remove('show');
+        }
+
+        function showCommentPopup() {
+            document.getElementById('commentPopup').classList.add('show');
+            document.getElementById('commentOverlay').classList.add('show');
+        }
+
+        function closeCommentPopup() {
+            document.getElementById('commentPopup').classList.remove('show');
+            document.getElementById('commentOverlay').classList.remove('show');
+        }
+
+        function showHouseCommentPopup() {
+            document.getElementById('houseCommentPopup').classList.add('show');
+            document.getElementById('houseCommentOverlay').classList.add('show');
+        }
+
+        function closeHouseCommentPopup() {
+            document.getElementById('houseCommentPopup').classList.remove('show');
+            document.getElementById('houseCommentOverlay').classList.remove('show');
+        }
+
+        function showBookCommentPopup() {
+            document.getElementById('bookCommentPopup').classList.add('show');
+            document.getElementById('bookCommentOverlay').classList.add('show');
+        }
+
+        function closeBookCommentPopup() {
+            document.getElementById('bookCommentPopup').classList.remove('show');
+            document.getElementById('bookCommentOverlay').classList.remove('show');
+        }
+
+        function showWritingGuidePopup() {
+            document.getElementById('writingGuidePopup').classList.add('show');
+            document.getElementById('writingGuideOverlay').classList.add('show');
+        }
+
+        function closeWritingGuidePopup() {
+            document.getElementById('writingGuidePopup').classList.remove('show');
+            document.getElementById('writingGuideOverlay').classList.remove('show');
+        }
+
+        function showAllReviewsPopup() {
+            document.getElementById('allReviewsPopup').classList.add('show');
+            document.getElementById('allReviewsOverlay').classList.add('show');
+        }
+
+        function closeAllReviewsPopup() {
+            document.getElementById('allReviewsPopup').classList.remove('show');
+            document.getElementById('allReviewsOverlay').classList.remove('show');
+        }
+
+        function showSharePopup() {
+            document.getElementById('sharePopup').classList.add('show');
+            document.getElementById('shareOverlay').classList.add('show');
+        }
+
+        function closeSharePopup() {
+            document.getElementById('sharePopup').classList.remove('show');
+            document.getElementById('shareOverlay').classList.remove('show');
+        }
+
+        function showReviewPopup() {
+            document.getElementById('reviewPopup').classList.add('show');
+            document.getElementById('reviewOverlay').classList.add('show');
+        }
+
+        function closeReviewPopup() {
+            document.getElementById('reviewPopup').classList.remove('show');
+            document.getElementById('reviewOverlay').classList.remove('show');
+        }
+
+        function showTreeCommentPopup() {
+            document.getElementById('treeCommentPopup').classList.add('show');
+            document.getElementById('treeCommentOverlay').classList.add('show');
+        }
+
+        function closeTreeCommentPopup() {
+            document.getElementById('treeCommentPopup').classList.remove('show');
+            document.getElementById('treeCommentOverlay').classList.remove('show');
+        }
+
+        function showMotherPopup() {
+            document.getElementById('motherPopup').classList.add('show');
+            document.getElementById('motherOverlay').classList.add('show');
+        }
+
+        function closeMotherPopup() {
+            document.getElementById('motherPopup').classList.remove('show');
+            document.getElementById('motherOverlay').classList.remove('show');
+        }
+
+        function showMotherTextPopup() {
+            document.getElementById('motherTextPopup').classList.add('show');
+            document.getElementById('motherTextOverlay').classList.add('show');
+        }
+
+        function closeMotherTextPopup() {
+            document.getElementById('motherTextPopup').classList.remove('show');
+            document.getElementById('motherTextOverlay').classList.remove('show');
+        }
+
+        function showStoolPopup() {
+            document.getElementById('stoolPopup').classList.add('show');
+            document.getElementById('stoolOverlay').classList.add('show');
+        }
+
+        function closeStoolPopup() {
+            document.getElementById('stoolPopup').classList.remove('show');
+            document.getElementById('stoolOverlay').classList.remove('show');
+        }
+
+        function showTreePopup() {
+            const scene = document.getElementById('scene');
+            scene.classList.add('wife-planted');
+        }
+
+        function showBigTreeScene() {
+            const scene = document.getElementById('scene');
+            scene.classList.add('big-tree');
+        }
+
+        function showLaoyuPopup() {
+            const laoyuPopup = document.createElement('div');
+            laoyuPopup.id = 'laoyuPopup';
+            laoyuPopup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:linear-gradient(135deg,rgba(255,250,240,0.98),rgba(245,235,215,0.98));border-radius:20px;box-shadow:0 40px 100px rgba(74,55,40,0.3),0 0 0 2px #c9b896;padding:30px 35px;max-width:600px;opacity:0;visibility:hidden;transition:all 0.4s ease;z-index:300;';
+
+            laoyuPopup.innerHTML = `
+                <button onclick="closeLaoyuPopup()" style="position:absolute;top:12px;right:15px;width:30px;height:30px;border:none;background:linear-gradient(135deg,#8b7355,#6b5344);color:#fff;border-radius:50%;font-size:1.2em;cursor:pointer;transition:all 0.3s;">×</button>
+                <p style="font-size:1.15em;line-height:2.2;color:#4a3a2a;text-indent:2em;white-space:pre-line;">家有老妪，<strong style="color:#8B0000;">尝</strong>居于此。妪，先大母婢也，乳二世，先妣抚之甚厚。室西连于中闺，先妣<strong style="color:#8B0000;">尝</strong>一至。妪每谓余曰："某所，而母立于兹。"妪又曰："汝姊在吾怀，呱呱而泣；娘以指叩门扉曰：'儿寒乎？欲食乎？'吾从板外相为应答。"语未毕，余泣，妪亦泣。</p>
+            `;
+
+            document.body.appendChild(laoyuPopup);
+            setTimeout(() => {
+                laoyuPopup.style.opacity = '1';
+                laoyuPopup.style.visibility = 'visible';
+                laoyuPopup.style.transform = 'translate(-50%,-50%) scale(1)';
+            }, 50);
+        }
+
+        function closeLaoyuPopup() {
+            const laoyuPopup = document.getElementById('laoyuPopup');
+            if (laoyuPopup) {
+                laoyuPopup.style.opacity = '0';
+                laoyuPopup.style.visibility = 'hidden';
+                laoyuPopup.style.transform = 'translate(-50%,-50%) scale(0.9)';
+                setTimeout(() => laoyuPopup.remove(), 400);
+            }
+        }
+
+        function showHomePage() {
+            const scene = document.getElementById('scene');
+            const btn = document.getElementById('compareBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const newPageBtn = document.getElementById('newPageBtn');
+
+            // 切换到留言分享页面（今已亭亭如盖.png）
+            scene.classList.remove('ancestral-home');
+            scene.classList.remove('before-repair');
+            scene.classList.add('big-tree');
+            newPageBtn.classList.remove('active');
+            
+            homeBtn.classList.add('active');
+            btn.classList.remove('active');
+        }
+
+        function toggleAncestralHome() {
+            const scene = document.getElementById('scene');
+            const courtyard = scene.querySelector('.courtyard');
+            const btn = document.getElementById('compareBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const newPageBtn = document.getElementById('newPageBtn');
+
+            if (scene.classList.contains('ancestral-home')) {
+                // 已处于归家祖宅状态，切换回项脊轩 - 缩小渐变
+                courtyard.classList.remove('zoom-to-ancestral');
+                courtyard.classList.add('zoom-from-ancestral');
+                scene.classList.remove('ancestral-home');
+                scene.classList.add('before-repair');
+                setTimeout(() => {
+                    courtyard.classList.remove('zoom-from-ancestral');
+                }, 600);
+                newPageBtn.classList.remove('active');
+                btn.classList.add('active');
+                homeBtn.classList.remove('active');
+            } else {
+                // 切换到归家祖宅 - 放大渐变
+                courtyard.classList.remove('zoom-from-ancestral');
+                courtyard.classList.add('zoom-to-ancestral');
+                scene.classList.remove('before-repair');
+                scene.classList.remove('big-tree');
+                scene.classList.add('ancestral-home');
+                setTimeout(() => {
+                    courtyard.classList.remove('zoom-to-ancestral');
+                }, 600);
+                newPageBtn.classList.add('active');
+                btn.classList.remove('active');
+                homeBtn.classList.remove('active');
+            }
+        }
+
+        function toggleRepair() {
+            const scene = document.getElementById('scene');
+            const courtyard = scene.querySelector('.courtyard');
+            const btn = document.getElementById('compareBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const newPageBtn = document.getElementById('newPageBtn');
+
+            // 切换到修缮前（项脊轩旧南阁子.png）
+            if (scene.classList.contains('ancestral-home')) {
+                // 从归家祖宅切换
+                courtyard.classList.remove('zoom-to-ancestral');
+                courtyard.classList.add('zoom-from-ancestral');
+                setTimeout(() => {
+                    scene.classList.remove('ancestral-home');
+                    scene.classList.remove('big-tree');
+                    courtyard.classList.remove('zoom-from-ancestral');
+                }, 600);
+            } else {
+                scene.classList.remove('ancestral-home');
+                scene.classList.remove('big-tree');
+            }
+            newPageBtn.classList.remove('active');
+            
+            scene.classList.add('before-repair');
+            btn.classList.add('active');
+            homeBtn.classList.remove('active');
+        }
+
+        function showWifeDeadScene() {
+            const scene = document.getElementById('scene');
+            isWifeDeadPermanent = true;
+            scene.classList.add('wife-dead');
+        }
+
+        const locations = {
+            xuan: {
+                title: "项脊轩",
+                classical: `项脊轩，旧南阁子也。室仅方丈，可容一人居。
+百年老屋，尘泥渗漉，雨泽下注，每移案，顾视无可置者。
+又北向，不能得日，日过午已昏。
+余稍为修葺，使不上漏。前辟四窗，垣墙周庭，以当南日，日影反照，室始洞然。
+又杂植兰桂竹木于庭。`,
+                translation: `项脊轩，是过去的南阁子。屋子只有一丈见方，只能容纳一个人居住。
+
+这间百年老屋，灰尘和泥土不断渗漏，雨水往下流淌，每当移动书桌时，环顾四周没有可以安置的地方。
+
+屋子又朝向西北，不能照到阳光，太阳一过中午屋里就暗了。
+
+我稍微加以修补，使上面不再漏雨。前面开了四扇窗，在院子四周筑起围墙，用它来挡住南边的日光，日光经过反射照进屋子，屋里才明亮起来。
+
+又在庭院中种上兰花、桂花、竹子和树木，旧时的栏杆，也因此增添了光彩。`,
+                explanation: `项脊轩是归有光少年时代读书的书房。"项脊"本是人体脊椎骨之名，归有光用它来给自己的书斋命名，既有自谦之意（言其渺小如项脊），也暗示了这间屋子在他心中如同脊梁般重要。这段描写了书房的简陋与归有光的精心修缮，体现了少年归有光对知识的渴求和恬淡自足的心境。`
+            },
+            ting: {
+                title: "庭院读书",
+                classical: `借书满架，偃仰啸歌，冥然兀坐，万籁有声。
+而庭阶寂寂，小鸟时来啄食，人至不去。
+三五之夜，明月半墙，桂影斑驳，风移影动，珊珊可爱。`,
+                translation: `借来的书堆满了书架，我有时俯身有时仰起头来吟诗唱歌，静静地独自端坐，四周的自然声响都可以听见。
+
+庭院前很寂静，小鸟时常飞来啄食，人来了也不飞走。
+
+每月十五的夜晚，明亮的月光照亮了半面墙壁，桂树的影子错落有致，微风吹过，树影轻轻晃动，优美极了。`,
+                },
+            zu: {
+                title: "祖母的关爱",
+                classical: `然余居于此，多可喜，亦多可悲。
+先是，庭中通南北为一。迨诸父异爨，内外多置小门，墙往往而是。
+东犬西吠，客逾庖而宴，鸡栖于厅。庭中始为篱，已为墙，凡再变矣。
+余家有一老妪，尝居于此。妪，先大母婢也，乳二世，先妣抚之甚厚。
+室西连于中闺，先妣尝一至。妪每谓余曰："某所，而母立于兹。"
+妪又曰："汝姊在吾怀，呱呱而泣；娘以指叩门扉，曰：'儿寒乎？欲食乎？'吾从板外相为应答。"
+语未毕，余泣，妪亦泣。`,
+                translation: `然而我住在这里，可喜的事很多，可悲的事也很多。
+
+先前，庭院南北贯通成为一体。等到各位伯叔分家以后，屋里屋外开了许多小门，墙到处都是。
+
+东家的狗对着西家叫，客人越过厨房去赴宴，鸡在厅堂栖息。庭院中先是扎了篱笆，后来又砌成了墙，总共变了两次。
+
+我家有个老妈妈，曾经在这里住过。她是我去世的祖母的婢女，喂养了两代人，已故的母亲待她很好。
+
+屋子西边连着内室，已故的母亲曾来过一次。这位老妈妈常对我说："那个地方，你母亲曾经站在那里。"
+
+她又对我说："你姐姐在我怀里，哇哇地哭，你母亲用手指敲敲门扉，问道：'孩子冷吗？想吃东西吗？'我在门外替她一一回答。"
+
+话没说完，我哭了，老妈妈也哭了。`,
+                explanation: `这段回忆了祖母对归有光的关爱。祖母看到他学有所成，曾骄傲地说："吾家读书久不效，儿之成，则可待乎！"还取出自家的象笏给他看，寄托了殷切期望。归有光三十五岁才中举人，后来又多次应试不第，直到六十岁才中进士。祖母的期望和归有光后来的人生遭遇，使这段回忆更添悲情色彩。`
+            },
+            mu: {
+                title: "母亲的牵挂",
+                classical: `娘以指叩门扉，曰："儿寒乎？欲食乎？"
+吾从板外相为应答。
+语未毕，余泣，妪亦泣。`,
+                translation: `你母亲用手指敲敲门扉，问道："孩子冷吗？想吃东西吗？"
+
+我在门外替她一一回答。
+
+话没说完，我哭了，老妈妈也哭了。`,
+                explanation: `这段通过老妈妈之口，追忆了母亲对幼年归有光的关爱。母亲"以指叩门扉"的细节，"儿寒乎？欲食乎"的询问，将母爱的细腻温柔表现得淋漓尽致。归有光八岁时母亲去世，对母亲的记忆已经模糊，只能通过老妈妈的口述来回忆，更显母子情深。这种侧面描写的手法，以虚写实，具有强烈的艺术感染力。`
+            },
+            qi: {
+                title: "妻子的音容",
+                classical: `余既为此志，后五年，吾妻来归。
+时至轩中，从余问古事，或凭几学书。
+吾妻归宁，述诸小妹语曰："闻姊家有阁子，且何谓阁子也？"
+其后六年，吾妻死，室坏不修。
+其后二年，余久卧病无聊，乃使人复葺南阁子，其制稍异于前。
+然自后余多在外，不常居。
+庭有枇杷树，吾妻死之年所手植也，今已亭亭如盖矣。`,
+                translation: `我已经写了这篇志，过了五年，我的妻子嫁到我家来。
+
+她时常来到轩中，向我询问古代的事情，有时靠在桌案上学习写字。
+
+我的妻子从娘家省亲回来，转述她妹妹们的话说："听说姐姐家有个阁子，什么是阁子呀？"
+
+这以后六年，我的妻子去世了，房屋坏了没有修理。
+
+这以后两年，我长期卧病在床，无聊之际，就派人再次修缮南阁子，它的规模样式和先前稍有不同。
+
+然而自从这以后我大多在外部，不常住在轩中。
+
+庭院中有一棵枇杷树，是我妻子死的那一年亲手种植的，现在已经高高地立在那里，枝叶繁茂像车盖一样了。`,
+                explanation: `这是《项脊轩志》最动人的一段，以枇杷树作结，成为文学史上最含蓄深沉的悼亡之笔。"庭有枇杷树，吾妻死之年所手植也，今已亭亭如盖矣"——树犹如此，人何以堪！作者不说思念，思念却最深。物是人非的感慨，对亡妻的深切怀念，全在这棵"亭亭如盖"的枇杷树中。沈德潜评此句"一句情思"，道出了这篇千古名作的艺术精髓。`
+            }
+        };
+
+        const characterPositions = {
+            xuan: { top: "26%", left: "48%" },
+            zu: { top: "61%", left: "75%" },
+            mu: { top: "22%", left: "81%" },
+            qi: { top: "71%", left: "51%" }
+        };
+
+        let visitedLocations = new Set();
+        const totalLocations = 4;
+
+        function showPanel(locationId) {
+            const data = locations[locationId];
+            const panel = document.getElementById('textPanel');
+            
+            document.getElementById('locationTitle').textContent = data.title;
+            document.getElementById('classicalText').textContent = data.classical;
+            document.getElementById('translation').textContent = data.translation;
+            document.getElementById('explanationText').textContent = data.explanation;
+            
+            moveCharacter(locationId);
+            
+            setTimeout(() => {
+                panel.classList.add('active');
+            }, 800);
+            
+            if (!visitedLocations.has(locationId)) {
+                visitedLocations.add(locationId);
+                updateProgress();
+                document.getElementById('marker-' + locationId).classList.add('show');
+            }
+            
+            document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+            document.getElementById(locationId).classList.add('active');
+        }
+
+        function closePanel() {
+            document.getElementById('textPanel').classList.remove('active');
+            document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+        }
+
+        function moveCharacter(locationId) {
+            // 跟随鼠标移动，不固定位置
+        }
+
+        function updateProgress() {
+            const progress = (visitedLocations.size / totalLocations) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        document.querySelectorAll('.hotspot').forEach(hotspot => {
+            hotspot.addEventListener('click', () => {
+                const locationId = hotspot.dataset.location;
+                showPanel(locationId);
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePanel();
+        });
+
+        document.getElementById('scene').addEventListener('click', (e) => {
+            const courtyard = e.target.closest('.courtyard');
+            if (e.target.id === 'scene' || courtyard) {
+                closePanel();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('character').style.opacity = '1';
+            }, 500);
+        });
+
+        // 小人跟随鼠标移动
+        const scene = document.getElementById('scene');
+        const character = document.getElementById('character');
+
+        document.addEventListener('mousemove', (e) => {
+            character.style.left = e.clientX + 'px';
+            character.style.top = e.clientY + 'px';
+        });
+    </script>
+</body>
+</html>
